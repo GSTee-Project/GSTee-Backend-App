@@ -1,8 +1,9 @@
 # Node modules
 node_modules/
 
+
 # Environment variables
-# .env
+ .env
 
 # Logs
 logs
@@ -15,3 +16,4 @@ Thumbs.db
 # Sequelize specific
 config/config.json
 test.js
+phases.txt
