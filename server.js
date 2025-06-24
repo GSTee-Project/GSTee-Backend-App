@@ -1,10 +1,17 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import sequelize from "./config/database.js";
+import { sequelize } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+// Importing routes
+import userRoutes from "./routes/userRoutes.js";
+import slideRoutes from "./routes/slideRoutes.js";
+import lessonProgressRoutes from "./routes/lessonProgressRoutes.js";
+import heartRoutes from "./routes/heartRoutes.js";
+import gameRoutes from "./routes/gameRoutes.js";
+import gameSessionRoutes from "./routes/gameSessionRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -21,12 +28,27 @@ const corsOptions = {
   credentials: true,
 };
 
+// Test database connection
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Database connection established successfully.");
+    sequelize.sync({ force: false }); // Sync models with the database
+  })
+  .catch((err) => console.error("Unable to connect to the database:", err));
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 //Routes
 app.use("/api/auth", authRoutes);
+app.use("/api", userRoutes);
+app.use("/api", slideRoutes);
+app.use("/api", lessonProgressRoutes);
+app.use("/api", heartRoutes);
+app.use("/api", gameRoutes);
+app.use("/api", gameSessionRoutes);
 
 //Sync database
 sequelize.sync().then(() => console.log("Database connected"));

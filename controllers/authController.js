@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import { User } from "../config/database.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "../config/emailService.js";
