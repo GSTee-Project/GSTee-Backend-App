@@ -1,6 +1,7 @@
 import express from "express";
-import { earnHeart } from "../controllers/heartController.js";
+import { earnHeart, getHeart } from "../controllers/heartController.js";
 
 const router = express.Router();
 router.post("/hearts/earn", earnHeart);
+router.get("/hearts/earn", getHeart);
 export default router;

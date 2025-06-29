@@ -10,6 +10,7 @@ import userBadgeModel from "../models/UserBadge.js";
 import powerUpModel from "../models/PowerUp.js";
 import userPowerUpModel from "../models/UserPowerUp.js";
 import gCoinTransactionModel from "../models/GCoinTransaction.js";
+import question from "../models/Question.js"; // Import Question model
 
 // Load environment variables
 dotenv.config();
@@ -36,44 +37,48 @@ const UserBadge = userBadgeModel(sequelize);
 const PowerUp = powerUpModel(sequelize);
 const UserPowerUp = userPowerUpModel(sequelize);
 const GCoinTransaction = gCoinTransactionModel(sequelize);
+const Question = question(sequelize);
 
 // Associations
 
 // User ↔ LessonProgress
-User.hasMany(LessonProgress, { foreignKey: "userId" });
-LessonProgress.belongsTo(User, { foreignKey: "userId" });
-
-// User ↔ Heart
-User.hasMany(Heart, { foreignKey: "userId" });
-Heart.belongsTo(User, { foreignKey: "userId" });
-
-// User ↔ GameSession
-User.hasMany(GameSession, { foreignKey: "userId" });
-GameSession.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(LessonProgress, { foreignKey: "userId", onDelete: "CASCADE" });
+LessonProgress.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
 
 // Slide ↔ LessonProgress
-Slide.hasMany(LessonProgress, { foreignKey: "slideId" });
-LessonProgress.belongsTo(Slide, { foreignKey: "slideId" });
+Slide.hasMany(LessonProgress, { foreignKey: "slideId", onDelete: "CASCADE" });
+LessonProgress.belongsTo(Slide, { foreignKey: "slideId", onDelete: "CASCADE" });
+
+// User ↔ Heart
+User.hasMany(Heart, { foreignKey: "userId", onDelete: "CASCADE" });
+Heart.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+
+// User ↔ GameSession
+User.hasMany(GameSession, { foreignKey: "userId", onDelete: "CASCADE" });
+GameSession.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
 
 // User ↔ UserBadge
-User.hasMany(UserBadge, { foreignKey: "userId" });
-UserBadge.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(UserBadge, { foreignKey: "userId", onDelete: "CASCADE" });
+UserBadge.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
 
 // Badge ↔ UserBadge
-Badge.hasMany(UserBadge, { foreignKey: "badgeId" });
-UserBadge.belongsTo(Badge, { foreignKey: "badgeId" });
+Badge.hasMany(UserBadge, { foreignKey: "badgeId", onDelete: "CASCADE" });
+UserBadge.belongsTo(Badge, { foreignKey: "badgeId", onDelete: "CASCADE" });
 
 // User ↔ UserPowerUp
-User.hasMany(UserPowerUp, { foreignKey: "userId" });
-UserPowerUp.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(UserPowerUp, { foreignKey: "userId", onDelete: "CASCADE" });
+UserPowerUp.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
 
 // PowerUp ↔ UserPowerUp
-PowerUp.hasMany(UserPowerUp, { foreignKey: "powerUpId" });
-UserPowerUp.belongsTo(PowerUp, { foreignKey: "powerUpId" });
+PowerUp.hasMany(UserPowerUp, { foreignKey: "powerUpId", onDelete: "CASCADE" });
+UserPowerUp.belongsTo(PowerUp, {
+  foreignKey: "powerUpId",
+  onDelete: "CASCADE",
+});
 
 // User ↔ GCoinTransaction
-User.hasMany(GCoinTransaction, { foreignKey: "userId" });
-GCoinTransaction.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(GCoinTransaction, { foreignKey: "userId", onDelete: "CASCADE" });
+GCoinTransaction.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
 
 // Export all models
 export {
@@ -88,4 +93,5 @@ export {
   PowerUp,
   UserPowerUp,
   GCoinTransaction,
+  Question,
 };

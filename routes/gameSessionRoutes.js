@@ -1,10 +1,10 @@
 import express from "express";
 import {
   recordGameSession,
-  getUserGameSessions,
+  updateGameSession,
 } from "../controllers/gameSessionController.js";
 
 const router = express.Router();
-router.post("/game/sessions", recordGameSession);
-router.get("/game/sessions/:userId", getUserGameSessions);
+router.post("/game/sessions", updateGameSession);
+router.get("/game/sessions/:userId", recordGameSession);
 export default router;
