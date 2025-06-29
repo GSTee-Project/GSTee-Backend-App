@@ -13,6 +13,8 @@ import heartRoutes from "./routes/heartRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import gameSessionRoutes from "./routes/gameSessionRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
+import badgeRoutes from "./routes/badgeRoutes.js";
+import userBadgeRoutes from "./routes/userBadgeRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -51,7 +53,9 @@ app.use("/api", heartRoutes);
 app.use("/api", gameRoutes);
 app.use("/api", gameSessionRoutes);
 app.use("/api", questionRoutes);
-app.use((req, res) => res.status(404).json({ message: "Route not found" }));
+app.use("/api", badgeRoutes);
+app.use("/api", userBadgeRoutes);
+app.use((req, res) => res.status(404).json({ message: "Route not exists!" }));
 
 //Sync database
 sequelize.sync().then(() => console.log("Database connected"));
