@@ -11,6 +11,11 @@ export default (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    lastMilestone: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+
     lastEarnedAt: {
       type: DataTypes.DATE,
     },

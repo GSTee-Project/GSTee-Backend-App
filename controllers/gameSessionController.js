@@ -1,28 +1,41 @@
-import { GameSession } from "../config/database.js";
+import { GameSession, Heart } from "../config/database.js";
 
-export const recordGameSession = async (req, res) => {
+export const updateGameSession = async (req, res) => {
   try {
-    const { userId, gameMode, score, correctAnswers, duration, result } =
-      req.body;
-    const session = await GameSession.create({
-      userId,
-      gameMode,
-      score,
-      correctAnswers,
-      duration,
-      result,
-      playedAt: new Date(),
+    const { sessionId, score, correctAnswers, duration, result } = req.body;
+
+    if (!sessionId || !result) {
+      return res.status(400).json({ error: "Missing sessionId or result." });
+    }
+
+    const session = await GameSession.findByPk(sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Game session not found." });
+    }
+
+    // Update session data
+    session.score = score;
+    session.correctAnswers = correctAnswers;
+    session.duration = duration;
+    session.result = result;
+    session.playedAt = new Date();
+    await session.save();
+
+    res.status(200).json({
+      message: "Game session updated 📝",
+      session,
     });
-    res.status(201).json(session);
   } catch (err) {
-    res.status(500).json({ error: "Failed to record game session." });
+    console.error(err);
+    res.status(500).json({ error: "Failed to update game session." });
   }
 };
 
-export const getUserGameSessions = async (req, res) => {
+export const recordGameSession = async (req, res) => {
   try {
     const sessions = await GameSession.findAll({
       where: { userId: req.params.userId },
+      order: [["playedAt", "DESC"]],
     });
     res.json(sessions);
   } catch (err) {
