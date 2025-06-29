@@ -12,6 +12,7 @@ import lessonProgressRoutes from "./routes/lessonProgressRoutes.js";
 import heartRoutes from "./routes/heartRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import gameSessionRoutes from "./routes/gameSessionRoutes.js";
+import questionRoutes from "./routes/questionRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -33,7 +34,7 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Database connection established successfully.");
-    sequelize.sync({ force: false }); // Sync models with the database
+    sequelize.sync({ alter: true }); // Sync models with the database
   })
   .catch((err) => console.error("Unable to connect to the database:", err));
 
@@ -49,6 +50,8 @@ app.use("/api", lessonProgressRoutes);
 app.use("/api", heartRoutes);
 app.use("/api", gameRoutes);
 app.use("/api", gameSessionRoutes);
+app.use("/api", questionRoutes);
+app.use((req, res) => res.status(404).json({ message: "Route not found" }));
 
 //Sync database
 sequelize.sync().then(() => console.log("Database connected"));

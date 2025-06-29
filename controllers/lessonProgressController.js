@@ -22,7 +22,7 @@ export const markLessonComplete = async (req, res) => {
 
 export const getUserProgress = async (req, res) => {
   try {
-    const progress = await LessonProgress.findAll({
+    const progress = await LessonProgress.count({
       where: { userId: req.params.userId },
     });
     res.json(progress);
