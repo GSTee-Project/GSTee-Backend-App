@@ -16,4 +16,4 @@ Thumbs.db
 # Sequelize specific
 config/config.json
 test.js
-phases.txt
+phases.txt.env
