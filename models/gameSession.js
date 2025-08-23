@@ -28,6 +28,11 @@ export default (sequelize) => {
     playedAt: {
       type: DataTypes.DATE,
     },
+    // 🔑 Explicit FK column (unique name to avoid constraint clashes)
+    gameSessionUserId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   });
 
   return GameSession;

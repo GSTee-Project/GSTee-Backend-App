@@ -1,6 +1,5 @@
-import { DataTypes } from "sequelize";
-
-const userModel = (sequelize) => {
+// models/User.js
+const userModel = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
@@ -11,16 +10,19 @@ const userModel = (sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        validate: {
+          isEmail: true, // Sequelize built-in email validation
+        },
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       gender: {
         type: DataTypes.STRING,
@@ -28,17 +30,39 @@ const userModel = (sequelize) => {
       courseofstudy: {
         type: DataTypes.STRING,
       },
-      verificationCode: {
+
+      // Verification system
+      verificationCodeHash: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      verificationCodeExpiresAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      verificationAttempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
       isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+
+      // Brute-force login protection
+      failedLoginAttempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      lockedUntil: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       timestamps: true,
+      indexes: [{ unique: true, fields: ["email"] }],
+      tableName: "Users", // optional but recommended for naming consistency
     }
   );
 

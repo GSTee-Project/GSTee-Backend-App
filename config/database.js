@@ -1,4 +1,4 @@
-import Sequelize from "sequelize";
+import Sequelize, { DataTypes } from "sequelize";
 import dotenv from "dotenv";
 import userModel from "../models/user.js";
 import slideModel from "../models/slide.js";
@@ -27,7 +27,7 @@ const sequelize = new Sequelize(
 );
 
 // Initialize models
-const User = userModel(sequelize);
+const User = userModel(sequelize, DataTypes);
 const Slide = slideModel(sequelize);
 const LessonProgress = lessonProgressModel(sequelize);
 const Heart = heartModel(sequelize);
@@ -42,43 +42,95 @@ const Question = question(sequelize);
 // Associations
 
 // User ↔ LessonProgress
-User.hasMany(LessonProgress, { foreignKey: "userId", onDelete: "CASCADE" });
-LessonProgress.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(LessonProgress, {
+  foreignKey: { name: "lessonProgressUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+LessonProgress.belongsTo(User, {
+  foreignKey: { name: "lessonProgressUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // Slide ↔ LessonProgress
-Slide.hasMany(LessonProgress, { foreignKey: "slideId", onDelete: "CASCADE" });
-LessonProgress.belongsTo(Slide, { foreignKey: "slideId", onDelete: "CASCADE" });
+Slide.hasMany(LessonProgress, {
+  foreignKey: { name: "lessonProgressSlideId", allowNull: false },
+  onDelete: "CASCADE",
+});
+LessonProgress.belongsTo(Slide, {
+  foreignKey: { name: "lessonProgressSlideId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // User ↔ Heart
-User.hasMany(Heart, { foreignKey: "userId", onDelete: "CASCADE" });
-Heart.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(Heart, {
+  foreignKey: { name: "heartUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+Heart.belongsTo(User, {
+  foreignKey: { name: "heartUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // User ↔ GameSession
-User.hasMany(GameSession, { foreignKey: "userId", onDelete: "CASCADE" });
-GameSession.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(GameSession, {
+  foreignKey: { name: "gameSessionUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+
+GameSession.belongsTo(User, {
+  foreignKey: { name: "gameSessionUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // User ↔ UserBadge
-User.hasMany(UserBadge, { foreignKey: "userId", onDelete: "CASCADE" });
-UserBadge.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(UserBadge, {
+  foreignKey: { name: "userBadgeUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+UserBadge.belongsTo(User, {
+  foreignKey: { name: "userBadgeUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // Badge ↔ UserBadge
-Badge.hasMany(UserBadge, { foreignKey: "badgeId", onDelete: "CASCADE" });
-UserBadge.belongsTo(Badge, { foreignKey: "badgeId", onDelete: "CASCADE" });
+Badge.hasMany(UserBadge, {
+  foreignKey: { name: "userBadgeBadgeId", allowNull: false },
+  onDelete: "CASCADE",
+});
+UserBadge.belongsTo(Badge, {
+  foreignKey: { name: "userBadgeBadgeId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // User ↔ UserPowerUp
-User.hasMany(UserPowerUp, { foreignKey: "userId", onDelete: "CASCADE" });
-UserPowerUp.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(UserPowerUp, {
+  foreignKey: { name: "userPowerUpUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+UserPowerUp.belongsTo(User, {
+  foreignKey: { name: "userPowerUpUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // PowerUp ↔ UserPowerUp
-PowerUp.hasMany(UserPowerUp, { foreignKey: "powerUpId", onDelete: "CASCADE" });
+PowerUp.hasMany(UserPowerUp, {
+  foreignKey: { name: "userPowerUpPowerUpId", allowNull: false },
+  onDelete: "CASCADE",
+});
 UserPowerUp.belongsTo(PowerUp, {
-  foreignKey: "powerUpId",
+  foreignKey: { name: "userPowerUpPowerUpId", allowNull: false },
   onDelete: "CASCADE",
 });
 
 // User ↔ GCoinTransaction
-User.hasMany(GCoinTransaction, { foreignKey: "userId", onDelete: "CASCADE" });
-GCoinTransaction.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+User.hasMany(GCoinTransaction, {
+  foreignKey: { name: "gcoinTransactionUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
+GCoinTransaction.belongsTo(User, {
+  foreignKey: { name: "gcoinTransactionUserId", allowNull: false },
+  onDelete: "CASCADE",
+});
 
 // Export all models
 export {

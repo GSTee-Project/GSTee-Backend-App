@@ -5,8 +5,10 @@ import { sequelize } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import session from "express-session";
+import passport from "passport";
+
 // Importing routes
-import userRoutes from "./routes/userRoutes.js";
 import slideRoutes from "./routes/slideRoutes.js";
 import lessonProgressRoutes from "./routes/lessonProgressRoutes.js";
 import heartRoutes from "./routes/heartRoutes.js";
@@ -15,6 +17,9 @@ import gameSessionRoutes from "./routes/gameSessionRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
 import badgeRoutes from "./routes/badgeRoutes.js";
 import userBadgeRoutes from "./routes/userBadgeRoutes.js";
+
+import { authMiddleware } from "./middlewares/middleware.js";
+import "./config/passport.js"; // initialize strategy
 
 dotenv.config();
 const app = express();
@@ -36,7 +41,11 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Database connection established successfully.");
-    sequelize.sync({ alter: true }); // Sync models with the database
+    // ❌ DO NOT use force:true in prod
+    // ❌ DO NOT use alter:true in prod (unless testing)
+    // ✅ Instead rely on migrations
+
+    sequelize.sync({ force: false }); // Sync models with the database
   })
   .catch((err) => console.error("Unable to connect to the database:", err));
 
@@ -44,21 +53,28 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
 //Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", userRoutes);
-app.use("/api", slideRoutes);
-app.use("/api", lessonProgressRoutes);
-app.use("/api", heartRoutes);
-app.use("/api", gameRoutes);
-app.use("/api", gameSessionRoutes);
-app.use("/api", questionRoutes);
-app.use("/api", badgeRoutes);
-app.use("/api", userBadgeRoutes);
+// Protected (require login)
+app.use("/api", authMiddleware, slideRoutes);
+app.use("/api", authMiddleware, lessonProgressRoutes);
+app.use("/api", authMiddleware, heartRoutes);
+app.use("/api", authMiddleware, gameRoutes);
+app.use("/api", authMiddleware, gameSessionRoutes);
+app.use("/api", authMiddleware, questionRoutes);
+app.use("/api", authMiddleware, badgeRoutes);
+app.use("/api", authMiddleware, userBadgeRoutes);
 app.use((req, res) => res.status(404).json({ message: "Route not exists!" }));
-
-//Sync database
-sequelize.sync().then(() => console.log("Database connected"));
 
 const PORT = process.env.PORT || 4000;
 

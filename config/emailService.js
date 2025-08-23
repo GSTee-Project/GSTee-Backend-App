@@ -3,29 +3,30 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const myApp = "http://localhost:5000";
+
+// Transporter
 const transporter = nodemailer.createTransport({
-  port: process.env.SMTP_PORT,
-  host: process.env.SMTP_HOST,
+  service: "gmail", // Gmail service
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.EMAIL_USER, // Gmail address
+    pass: process.env.EMAIL_PASS, // App password
   },
 });
 
 export const sendVerificationEmail = async (email, code, userId) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: process.env.EMAIL_USER, // Sender email (must match auth.user)
       to: email,
       subject: "Your Verification Code",
-      text: `Your verification link is ${myApp}/api/auth/verify?id=${userId}&code=${code}`,
+      text: `Your verification link is: ${myApp}/api/auth/verify?id=${userId}&code=${code}`,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent successfully to ${email}`);
+    console.log(`✅ Email sent successfully to ${email}`);
     return { success: true, message: `Verification code sent successfully` };
   } catch (error) {
-    console.error("Error sending email", error.message);
+    console.error("❌ Error sending email:", error.message);
     return {
       success: false,
       message: "Failed to send email",
@@ -33,5 +34,6 @@ export const sendVerificationEmail = async (email, code, userId) => {
     };
   }
 };
-const email = process.env.EMAIL;
-console.log("The sender email is:", email);
+
+// Debug log
+console.log("The sender email is:", process.env.EMAIL_USER);
