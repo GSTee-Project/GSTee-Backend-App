@@ -3,7 +3,7 @@ node_modules/
 
 
 # Environment variables
- .env
+.env
 
 # Logs
 logs
@@ -13,7 +13,4 @@ logs
 .DS_Store
 Thumbs.db
 
-# Sequelize specific
-config/config.json
-test.js
-phases.txt.env
+.env
